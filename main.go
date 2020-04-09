@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"time"
 
+	collector "github.com/nadeemjamali/sqs-prometheus-exporter/pkg/collector"
+
 	"github.com/go-co-op/gocron"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
