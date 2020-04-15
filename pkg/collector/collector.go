@@ -36,7 +36,7 @@ func init() {
 func MonitorSQS() error {
 	queues, _ , err := getQueues()
 	if err != nil {
-		return fmt.Errorf("Error occurred while retrieve queues info from SQS: %v", err)
+		return fmt.Errorf("[MONITORING ERROR]: Error occurred while retrieve queues info from SQS: %v", err)
 	}
 
 	for queue, attr := range queues {

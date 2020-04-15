@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	collector "github.com/nadeemjamali/sqs-prometheus-exporter/pkg/collector"
@@ -19,6 +20,7 @@ var (
 	port 				= getEnv("PORT", "9434")
 	intervalStr 		= getEnv("INTERVAL", "1")
 	endpoint				=	getEnv("ENDPOINT", "metrics")
+	keepRunningOnErrorStr = getEnv("KEEP_RUNNING", "true")
 )
 
 func main() {
@@ -47,8 +49,23 @@ func main() {
 	scheduler.Start()
 
 	fmt.Println(fmt.Sprintf("metrics server listening at port %v with monitoring interval of %v minute(s).", httpServer.Addr, interval))
-	err = <- errChanel
-	fmt.Println(err)
+
+	keepRunningOnError, _ := strconv.ParseBool(keepRunningOnErrorStr)
+	if keepRunningOnError {
+		for {
+			err = <- errChanel
+			fmt.Println(err)
+
+			index := strings.Index(err.Error(), "[MONITORING ERROR]")
+			if index == -1 {
+				break
+			}
+		}
+	}	else {
+		err = <- errChanel
+		fmt.Println(err)
+	}
+
 	fmt.Println("Terminating the server and monitoring")
 	httpServer.Shutdown(ctx)
 	scheduler.Clear()
