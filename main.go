@@ -48,7 +48,7 @@ func main() {
 	scheduler.Every(interval).Minutes().Do(startMonitoring, errChanel)
 	scheduler.Start()
 
-	fmt.Println(fmt.Sprintf("metrics server listening at port %v with monitoring interval of %v minute(s).", httpServer.Addr, interval))
+	fmt.Println(fmt.Sprintf("Metrics server listening at port %v with monitoring interval of %v minute(s).", httpServer.Addr, interval))
 
 	keepRunningOnError, _ := strconv.ParseBool(keepRunningOnErrorStr)
 	if keepRunningOnError {
@@ -90,9 +90,9 @@ func setupMetricsServer() (*http.Server, error) {
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`
 	        <html>
-	        <head><title>SQS Exporter</title></head>
+	        <head><title>SQS Prometheus Exporter</title></head>
 	        <body>
-	        <h1>SQS Exporter</h1>
+	        <h1>SQS Prometheus Exporter</h1>
 	        <p><a href='`+*metricsPath+`'>Metrics</a></p>
 	        </body>
 	        </html>`))
