@@ -27,16 +27,16 @@ var (
 )
 
 func init() {
-	prometheus.MustRegister(visibleMessageCounter)
-	prometheus.MustRegister(delayedMessageCounter)
-	prometheus.MustRegister(invisibleMessageCounter)
+	prometheus.MustRegister(visibleMessageGauge)
+	prometheus.MustRegister(delayedMessageGauge)
+	prometheus.MustRegister(invisibleMessageGauge)
 }
 
 // MonitorSQS Retrieves the attributes of all allowed queues from SQS and appends the metrics
 func MonitorSQS() error {
-	queues,listQueueTags, err := getQueues()
+	queues, _ , err := getQueues()
 	if err != nil {
-		return err
+		return fmt.Errorf("[MONITORING ERROR]: Error occurred while retrieve queues info from SQS: %v", err)
 	}
 
 	for queue, attr := range queues {
@@ -44,8 +44,19 @@ func MonitorSQS() error {
 		msgDelayed, delayError := strconv.ParseFloat(*attr.Attributes["ApproximateNumberOfMessagesDelayed"], 64)
 		msgNotVisible, invisibleError := strconv.ParseFloat(*attr.Attributes["ApproximateNumberOfMessagesNotVisible"], 64)
 		
+		if msgError != nil {
+			return fmt.Errorf("Error in converting ApproximateNumberOfMessages: %v", msgError)
+		}
 		visibleMessageGauge.WithLabelValues(queue).Add(msgAvailable)
+
+		if delayError != nil {
+			return fmt.Errorf("Error in converting ApproximateNumberOfMessagesDelayed: %v", delayError)
+		}
 		delayedMessageGauge.WithLabelValues(queue).Add(msgDelayed)
+
+		if invisibleError != nil {
+			return fmt.Errorf("Error in converting ApproximateNumberOfMessagesNotVisible: %v", invisibleError)
+		}
 		invisibleMessageGauge.WithLabelValues(queue).Add(msgNotVisible)
 	}
 	return nil
@@ -64,14 +75,15 @@ func getQueues() (queues map[string]*sqs.GetQueueAttributesOutput, tags map[stri
 	if err != nil {
 		return nil, nil, err
 	}
-
-	queues = make(map[string]*sqs.GetQueueAttributesOutput)
-	tags = make(map[string]*sqs.ListQueueTagsOutput)
-
+	fmt.Println(result)
 	if result.QueueUrls == nil {
 		err = fmt.Errorf("SQS did not return any QueueUrls")
 		return nil, nil, err
 	}
+
+	queues = make(map[string]*sqs.GetQueueAttributesOutput)
+	tags = make(map[string]*sqs.ListQueueTagsOutput)
+
 	for _, urls := range result.QueueUrls {
 		params := &sqs.GetQueueAttributesInput{
 			QueueUrl: aws.String(*urls),

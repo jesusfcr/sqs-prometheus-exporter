@@ -1,20 +1,20 @@
-FROM golang:1.10
+FROM golang:1.13.3
 
-WORKDIR /go/src/github.com/ashiddo11/sqs-exporter/
-
-RUN go get github.com/aws/aws-sdk-go
+WORKDIR /go/src/github.com/nadeemjamali/sqs-prometheus-exporter/
  
 COPY .  .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o sqs-exporter .
+RUN go get -d ./...
+
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o sqs-prometheus-exporter .
 
 FROM alpine
 
-COPY --from=0 /go/src/github.com/ashiddo11/sqs-exporter/sqs-exporter /
+COPY --from=0 /go/src/github.com/nadeemjamali/sqs-prometheus-exporter /
 
 RUN apk --update add ca-certificates && \
 	rm -rf /var/cache/apk/*
 
 EXPOSE 9434
 
-CMD ["/sqs-exporter"]
+CMD ["/sqs-prometheus-exporter"]
