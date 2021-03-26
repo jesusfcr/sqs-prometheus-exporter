@@ -47,17 +47,17 @@ func MonitorSQS(sqsNamePrefix, sqsEndpoint string) error {
 		if msgError != nil {
 			return fmt.Errorf("Error in converting ApproximateNumberOfMessages: %v", msgError)
 		}
-		visibleMessageGauge.WithLabelValues(queue).Add(msgAvailable)
+		visibleMessageGauge.WithLabelValues(queue).Set(msgAvailable)
 
 		if delayError != nil {
 			return fmt.Errorf("Error in converting ApproximateNumberOfMessagesDelayed: %v", delayError)
 		}
-		delayedMessageGauge.WithLabelValues(queue).Add(msgDelayed)
+		delayedMessageGauge.WithLabelValues(queue).Set(msgDelayed)
 
 		if invisibleError != nil {
 			return fmt.Errorf("Error in converting ApproximateNumberOfMessagesNotVisible: %v", invisibleError)
 		}
-		invisibleMessageGauge.WithLabelValues(queue).Add(msgNotVisible)
+		invisibleMessageGauge.WithLabelValues(queue).Set(msgNotVisible)
 	}
 	return nil
 }
