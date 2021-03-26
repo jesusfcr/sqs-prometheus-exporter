@@ -17,10 +17,12 @@ import (
 )
 
 var (
-	port 				= getEnv("PORT", "9434")
-	intervalStr 		= getEnv("INTERVAL", "1")
-	endpoint				=	getEnv("ENDPOINT", "metrics")
+	port                  = getEnv("PORT", "9434")
+	intervalStr           = getEnv("INTERVAL", "1")
+	endpoint              = getEnv("ENDPOINT", "metrics")
 	keepRunningOnErrorStr = getEnv("KEEP_RUNNING", "true")
+	sqsNamePrefix         = getEnv("SQS_QUEUE_NAME_PREFIX", "")
+	sqsEndpoint           = getEnv("AWS_SQS_ENDPOINT", "")
 )
 
 func main() {
@@ -38,13 +40,13 @@ func main() {
 
 	errChanel := make(chan error)
 
-	go func() { 
+	go func() {
 		e := httpServer.ListenAndServe()
 		errChanel <- e
 	}()
 
 	scheduler := gocron.NewScheduler(time.UTC)
-	
+
 	scheduler.Every(interval).Minutes().Do(startMonitoring, errChanel)
 	scheduler.Start()
 
@@ -53,7 +55,7 @@ func main() {
 	keepRunningOnError, _ := strconv.ParseBool(keepRunningOnErrorStr)
 	if keepRunningOnError {
 		for {
-			err = <- errChanel
+			err = <-errChanel
 			fmt.Println(err)
 
 			index := strings.Index(err.Error(), "[MONITORING ERROR]")
@@ -61,8 +63,8 @@ func main() {
 				break
 			}
 		}
-	}	else {
-		err = <- errChanel
+	} else {
+		err = <-errChanel
 		fmt.Println(err)
 	}
 
@@ -71,9 +73,10 @@ func main() {
 	scheduler.Clear()
 }
 
-func startMonitoring(errChanel chan error){
-	err := collector.MonitorSQS()
-	if err != nil{
+func startMonitoring(errChanel chan error) {
+	fmt.Println("startMonitoring")
+	err := collector.MonitorSQS(sqsNamePrefix, sqsEndpoint)
+	if err != nil {
 		errChanel <- err
 	}
 	return
@@ -85,21 +88,21 @@ func setupMetricsServer() (*http.Server, error) {
 		metricsPath   = flag.String("web.telemetry-path", "/"+endpoint, "Path under which to expose metrics.")
 	)
 	flag.Parse()
-	
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`
-	        <html>
+	    	<html>
 	        <head><title>SQS Prometheus Exporter</title></head>
 	        <body>
 	        <h1>SQS Prometheus Exporter</h1>
-	        <p><a href='`+*metricsPath+`'>Metrics</a></p>
+	        <p><a href='` + *metricsPath + `'>Metrics</a></p>
 	        </body>
 	        </html>`))
 	})
-	mux.Handle(*metricsPath, promhttp.Handler())	
+	mux.Handle(*metricsPath, promhttp.Handler())
 	httpServer := &http.Server{
-		Addr: *listenAddress,
+		Addr:    *listenAddress,
 		Handler: mux,
 	}
 
