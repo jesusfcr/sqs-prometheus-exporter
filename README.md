@@ -43,9 +43,7 @@ The app needs sqs list and read access to the sqs policies
                 "sqs:ListQueues",
                 "sqs:GetQueueUrl",
                 "sqs:ListDeadLetterSourceQueues",
-                "sqs:ReceiveMessage",
-                "sqs:GetQueueAttributes",
-                "sqs:ListQueueTags"
+                "sqs:GetQueueAttributes"
             ],
             "Resource": "*"
         }
