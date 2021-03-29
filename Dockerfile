@@ -2,7 +2,8 @@ FROM golang:1.15-alpine3.13 as builder
 
 WORKDIR /src
 
-ADD go.* .
+COPY go.mod .
+COPY go.sum .
 
 RUN go mod download
 
