@@ -1,4 +1,4 @@
-module github.com/candisio/sqs-prometheus-exporter
+module github.com/jesusfcr/sqs-prometheus-exporter
 
 go 1.15
 

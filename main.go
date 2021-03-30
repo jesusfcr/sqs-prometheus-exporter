@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	collector "github.com/candisio/sqs-prometheus-exporter/pkg/collector"
+	collector "github.com/jesusfcr/sqs-prometheus-exporter/pkg/collector"
 
 	"github.com/go-co-op/gocron"
 	"github.com/prometheus/client_golang/prometheus/promhttp"

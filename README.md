@@ -52,12 +52,15 @@ The app needs sqs list and read access to the sqs policies
 ```
 
 ## Environment Variables
+
 | Variable      | Default Value | Description                                                  |
 |---------------|:---------|:-------------------------------------------------------------|
 | PORT          | 9434     | The port for metrics server                                  |
 | INTERVAL      | 1        | The interval in minutes to get the status of SQS queues      |
 | ENDPOINT      | metrics  | The metrics endpoint                                         |
 | KEEP_RUNNING  | true     | The flag to terminate the service in case of monitoring error |
+| AWS_SQS_ENDPOINT | | Optional sqs endpoint (for mocked sqs service)  |
+| SQS_QUEUE_NAME_PREFIX | | Optional prefix queue name to filter |
 
 
 ## Running
