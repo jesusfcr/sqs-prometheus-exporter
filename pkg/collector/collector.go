@@ -81,14 +81,12 @@ func getQueues(sqsNamePrefix, sqsEndpoint string) (queues map[string]*sqs.GetQue
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(result)
 	if result.QueueUrls == nil {
 		err = fmt.Errorf("SQS did not return any QueueUrls")
 		return nil, err
 	}
 
 	queues = make(map[string]*sqs.GetQueueAttributesOutput)
-
 	for _, urls := range result.QueueUrls {
 		params := &sqs.GetQueueAttributesInput{
 			QueueUrl: aws.String(*urls),

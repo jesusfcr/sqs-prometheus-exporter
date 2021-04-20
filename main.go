@@ -74,7 +74,6 @@ func main() {
 }
 
 func startMonitoring(errChanel chan error) {
-	fmt.Println("startMonitoring")
 	err := collector.MonitorSQS(sqsNamePrefix, sqsEndpoint)
 	if err != nil {
 		errChanel <- err
