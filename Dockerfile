@@ -1,19 +1,22 @@
-FROM golang:1.13.3
+FROM golang:1.15-alpine3.13 as builder
 
-WORKDIR /go/src/github.com/nadeemjamali/sqs-prometheus-exporter/
- 
+WORKDIR /src
+
+COPY go.mod .
+COPY go.sum .
+
+RUN go mod download
+
 COPY .  .
 
-RUN go get -d ./...
-
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o sqs-prometheus-exporter .
+RUN GOOS=linux GOARCH=amd64 go build -o sqs-prometheus-exporter .
 
 FROM alpine
 
-COPY --from=0 /go/src/github.com/nadeemjamali/sqs-prometheus-exporter /
-
 RUN apk --update add ca-certificates && \
 	rm -rf /var/cache/apk/*
+
+COPY --from=builder /src /
 
 EXPOSE 9434
 

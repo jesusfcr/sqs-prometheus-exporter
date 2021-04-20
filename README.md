@@ -43,9 +43,7 @@ The app needs sqs list and read access to the sqs policies
                 "sqs:ListQueues",
                 "sqs:GetQueueUrl",
                 "sqs:ListDeadLetterSourceQueues",
-                "sqs:ReceiveMessage",
-                "sqs:GetQueueAttributes",
-                "sqs:ListQueueTags"
+                "sqs:GetQueueAttributes"
             ],
             "Resource": "*"
         }
@@ -54,18 +52,22 @@ The app needs sqs list and read access to the sqs policies
 ```
 
 ## Environment Variables
+
 | Variable      | Default Value | Description                                                  |
 |---------------|:---------|:-------------------------------------------------------------|
 | PORT          | 9434     | The port for metrics server                                  |
 | INTERVAL      | 1        | The interval in minutes to get the status of SQS queues      |
 | ENDPOINT      | metrics  | The metrics endpoint                                         |
 | KEEP_RUNNING  | true     | The flag to terminate the service in case of monitoring error |
+| AWS_SQS_ENDPOINT | | Optional sqs endpoint (for mocked sqs service)  |
+| SQS_QUEUE_NAME_PREFIX | | Optional prefix queue name to filter |
+| AWS_REGION | |  |
 
 
 ## Running
 
-```docker run -e INTERVAL=5 -e KEEP_RUNNING=false -d -p 9434:9434 candisio/sqs-prometheus-exporter```
+```docker run -e INTERVAL=5 -e KEEP_RUNNING=false -d -p 9434:9434 jesusfcr/sqs-prometheus-exporter```
 
 You can provide the AWS credentials as environment variables depending upon your security rules configured in AWS;
 
-```docker run -d -p 9384:9384 -e AWS_ACCESS_KEY_ID=<access_key> -e AWS_SECRET_ACCESS_KEY=<secret_key> -e AWS_REGION=<region>  candisio/sqs-prometheus-exporter```
+```docker run -d -p 9384:9384 -e AWS_ACCESS_KEY_ID=<access_key> -e AWS_SECRET_ACCESS_KEY=<secret_key> -e AWS_REGION=<region>  jesusfcr/sqs-prometheus-exporter```

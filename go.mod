@@ -1,9 +1,9 @@
-module github.com/candisio/sqs-prometheus-exporter
+module github.com/jesusfcr/sqs-prometheus-exporter
 
-go 1.13
+go 1.15
 
 require (
-	github.com/aws/aws-sdk-go v1.30.6
-	github.com/go-co-op/gocron v0.1.0
-	github.com/prometheus/client_golang v1.5.1
+	github.com/aws/aws-sdk-go v1.38.7
+	github.com/go-co-op/gocron v0.1.1
+	github.com/prometheus/client_golang v1.10.0
 )
