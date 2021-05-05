@@ -16,10 +16,6 @@ var (
 		Name: "sqs_approximatenumberofmessages",
 		Help: "The approximate number of visible messages in a queue.",
 	}, []string{"queue"})
-	delayedMessageGauge = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "sqs_approximatenumberofmessagesdelayed",
-		Help: "The approximate number of messages that are waiting to be added to the queue.",
-	}, []string{"queue"})
 	invisibleMessageGauge = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "sqs_approximatenumberofmessagesnotvisible",
 		Help: "The approximate number of messages that have not timed-out and aren't deleted.",
@@ -28,7 +24,6 @@ var (
 
 func init() {
 	prometheus.MustRegister(visibleMessageGauge)
-	prometheus.MustRegister(delayedMessageGauge)
 	prometheus.MustRegister(invisibleMessageGauge)
 }
 
@@ -41,18 +36,12 @@ func MonitorSQS(sqsNamePrefix, sqsEndpoint string) error {
 
 	for queue, attr := range queues {
 		msgAvailable, msgError := strconv.ParseFloat(*attr.Attributes["ApproximateNumberOfMessages"], 64)
-		msgDelayed, delayError := strconv.ParseFloat(*attr.Attributes["ApproximateNumberOfMessagesDelayed"], 64)
 		msgNotVisible, invisibleError := strconv.ParseFloat(*attr.Attributes["ApproximateNumberOfMessagesNotVisible"], 64)
 
 		if msgError != nil {
 			return fmt.Errorf("Error in converting ApproximateNumberOfMessages: %v", msgError)
 		}
 		visibleMessageGauge.WithLabelValues(queue).Set(msgAvailable)
-
-		if delayError != nil {
-			return fmt.Errorf("Error in converting ApproximateNumberOfMessagesDelayed: %v", delayError)
-		}
-		delayedMessageGauge.WithLabelValues(queue).Set(msgDelayed)
 
 		if invisibleError != nil {
 			return fmt.Errorf("Error in converting ApproximateNumberOfMessagesNotVisible: %v", invisibleError)
@@ -92,7 +81,6 @@ func getQueues(sqsNamePrefix, sqsEndpoint string) (queues map[string]*sqs.GetQue
 			QueueUrl: aws.String(*urls),
 			AttributeNames: []*string{
 				aws.String("ApproximateNumberOfMessages"),
-				aws.String("ApproximateNumberOfMessagesDelayed"),
 				aws.String("ApproximateNumberOfMessagesNotVisible"),
 			},
 		}
