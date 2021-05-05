@@ -12,9 +12,8 @@ We didn't submit this as a pull request to the original repository, since:
 
 | Metric  | Labels | Description |
 | ------  | ------ | ----------- |
-| sqs\_messages\_visible | Queue Name | Number of messages available |
-| sqs\_messages\_delayed | Queue Name | Number of messages delayed |
-| sqs\_messages\_not\_visible | Queue Name | Number of messages in flight |
+| sqs_approximatenumberofmessages | Queue Name | Number of messages available |
+| sqs_approximatenumberofmessagesnotvisible | Queue Name | Number of messages in flight |
 
 For more information see the [AWS SQS Documentation](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-attributes.html)
 
