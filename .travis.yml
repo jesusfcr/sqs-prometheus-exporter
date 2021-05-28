@@ -4,8 +4,10 @@ services:
   - docker
 before_install:
   - source <(curl -s https://raw.githubusercontent.com/adevinta/vulcan-cicd/split/docker.sh)
-  - echo "TAGS -> $TAGS"
+  - echo "TAGS -> $TAGS $INPUT_NAME"
 script:
+  - echo "TAGS -> $TAGS $INPUT_NAME"
   - docker_build
 after_success:
+  - echo "TAGS -> $TAGS $INPUT_NAME"
   - docker_push
