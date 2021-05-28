@@ -2,6 +2,9 @@ dist: bionic
 language: shell
 services:
   - docker
+before_install:
+  - source <(curl -s https://raw.githubusercontent.com/adevinta/vulcan-cicd/split/docker.sh)
+script:
+  - cicd_build
 after_success:
-  - bash -c 'source <(curl -s https://raw.githubusercontent.com/adevinta/vulcan-cicd/master/docker.sh)'
-
+  - cicd_push
