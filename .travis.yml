@@ -5,6 +5,6 @@ services:
 before_install:
   - source <(curl -s https://raw.githubusercontent.com/adevinta/vulcan-cicd/split/docker.sh)
 script:
-  - cicd_build
+  - docker_build
 after_success:
-  - cicd_push
+  - docker_push
