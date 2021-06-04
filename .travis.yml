@@ -1,5 +1,8 @@
 dist: bionic
 language: shell
+env:
+  global:
+  - INPUT_BUILDOPTIONS="--build-arg REGISTRY_BASE=ghcr.io/jesusfcro/"
 services:
   - docker
 before_install:
