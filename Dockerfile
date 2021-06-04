@@ -1,5 +1,5 @@
 ARG REGISTRY_BASE
-FROM ${REGISTRY_BASE}golang:1.15-alpine3.13 as builder
+FROM ${REGISTRY_BASE}golang:1.16-alpine as builder
 
 WORKDIR /src
 
@@ -22,3 +22,4 @@ COPY --from=builder /src /
 EXPOSE 9434
 
 CMD ["/sqs-prometheus-exporter"]
+
