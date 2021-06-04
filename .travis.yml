@@ -1,8 +1,5 @@
 dist: bionic
 language: shell
-env:
-  global:
-    - DOCKER_BUILDKIT=1
 services:
   - docker
 before_install:
