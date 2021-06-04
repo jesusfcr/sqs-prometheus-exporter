@@ -1,13 +1,10 @@
 dist: bionic
 language: shell
-# env:
-#   global:
-#   - INPUT_BUILDOPTIONS="--build-arg REGISTRY_BASE=ghcr.io/jesusfcro/"
 services:
   - docker
 before_install:
-  - source <(curl -s https://raw.githubusercontent.com/adevinta/vulcan-cicd/split/docker.sh)
+  - source <(curl -s https://raw.githubusercontent.com/adevinta/vulcan-cicd/split/dkr.sh)
 script:
-  - docker_build
+  - dkr_build
 after_success:
-  - docker_push
+  - dkr_push
