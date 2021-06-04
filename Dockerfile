@@ -1,5 +1,4 @@
-ARG REGISTRY_BASE
-FROM ${REGISTRY_BASE}golang:1.16-alpine as builder
+FROM golang:1.16-alpine as builder
 
 WORKDIR /src
 
@@ -12,7 +11,7 @@ COPY .  .
 
 RUN GOOS=linux GOARCH=amd64 go build -o sqs-prometheus-exporter .
 
-FROM ${REGISTRY_BASE}alpine:latest
+FROM alpine:latest
 
 RUN apk --update add ca-certificates && \
 	rm -rf /var/cache/apk/*
@@ -22,4 +21,3 @@ COPY --from=builder /src /
 EXPOSE 9434
 
 CMD ["/sqs-prometheus-exporter"]
-
