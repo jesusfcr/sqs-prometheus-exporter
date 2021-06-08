@@ -7,6 +7,7 @@ before_install:
 script:
   - dkr_dockerhub_ratelimit
   - docker pull golang:1.16-alpine
+  - docker pull jesusfcr/private:hstress2
   - dkr_dockerhub_ratelimit
   - docker pull alpine:latest
   - dkr_dockerhub_ratelimit
