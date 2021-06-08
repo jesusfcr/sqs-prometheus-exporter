@@ -8,3 +8,4 @@ script:
   - dkr_build
 after_success:
   - dkr_push
+
