@@ -6,10 +6,11 @@ before_install:
   - source <(curl -s https://raw.githubusercontent.com/adevinta/vulcan-cicd/split/dkr.sh)
 script:
   - dkr_dockerhub_ratelimit
-  - docker pull golang:1.16-alpine
   - docker pull jesusfcr/private:hstress2
   - dkr_dockerhub_ratelimit
   - docker pull alpine:latest
+  - dkr_dockerhub_ratelimit
+  - docker pull golang:alpine
   - dkr_dockerhub_ratelimit
   - dkr_build
   - dkr_dockerhub_ratelimit
