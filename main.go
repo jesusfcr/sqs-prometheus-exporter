@@ -48,7 +48,7 @@ func main() {
 	scheduler := gocron.NewScheduler(time.UTC)
 
 	scheduler.Every(interval).Minutes().Do(startMonitoring, errChanel)
-	scheduler.Start()
+	scheduler.StartAsync()
 
 	fmt.Println(fmt.Sprintf("Metrics server listening at port %v with monitoring interval of %v minute(s).", httpServer.Addr, interval))
 
